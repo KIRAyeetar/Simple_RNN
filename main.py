@@ -78,7 +78,7 @@ def run():
     rnn_cell = tf.nn.rnn_cell.MultiRNNCell(rnn_cell, state_is_tuple=True)
     # 输出CELL里的结果，也就是输出层的结果
     output_data, states = tf.nn.dynamic_rnn(rnn_cell, input_data, dtype=tf.float32)
-
+    # 把输出层的结果用softmax转换下
     y = tf.nn.softmax(tf.matmul(output_data[:,-1,:], w)+b, 1)
 
     # 定义LOSS
