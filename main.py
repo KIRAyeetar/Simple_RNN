@@ -39,15 +39,15 @@ def run():
     # BATCH_SIZE的大小
     BATCH_SIZE = 120
     # 循环训练多少次
-    STEPS = 2000
+    STEPS = 1000
     # 基准学习率
     LEARNING_RATE_BASE = 0.01
 
     # 下面两个参数解释下，特征有4维，看你怎么划分他们
     # 比如你认为 前两个特征和后两个特征有序列上的关系，你就划分成2x2的序列
     # 如果就是 四个毫无关联 的特征，那就直接 1x4就行
-    SEQUENCE_LEN = 1
-    FRAME_LEN = 4
+    SEQUENCE_LEN = 4
+    FRAME_LEN = 1
 
     # 隐藏层神经元数
     HIDDEN_LEN = 100
