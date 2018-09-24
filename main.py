@@ -96,7 +96,7 @@ def run():
     # 定义LOSS
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=y, labels=y_))
     # ADAM最小化LOSS
-    train_step = tf.train.AdamOptimizer(LEARNING_RATE_BASE).minimize(loss, global_step=global_step)
+    train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss, global_step=global_step)
     # 定义准确率
     correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(test_y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
