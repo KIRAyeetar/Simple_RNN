@@ -42,6 +42,8 @@ def run():
     STEPS = 1000
     # 基准学习率
     LEARNING_RATE_BASE = 0.01
+    # 全局计数
+    global_step = tf.Variable(0, trainable=False)
 
     # 下面两个参数解释下，特征有4维，看你怎么划分他们
     # 比如你认为 前两个特征和后两个特征有序列上的关系，你就划分成2x2的序列
@@ -80,11 +82,21 @@ def run():
     output_data, states = tf.nn.dynamic_rnn(rnn_cell, input_data, dtype=tf.float32)
     # 把输出层的结果用softmax转换下
     y = tf.nn.softmax(tf.matmul(output_data[:,-1,:], w)+b, 1)
+    
+    # 热重启+余弦退火
+    learning_rate = tf.train.cosine_decay_restarts(
+        learning_rate=LEARNING_RATE_BASE,
+        global_step=global_step,
+        first_decay_steps=(len(train_feature)/BATCH_SIZE)*40,
+        # first_decay_steps=5000,
+        t_mul=1.5,
+        m_mul=1.05
+    )
 
     # 定义LOSS
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=y, labels=y_))
     # ADAM最小化LOSS
-    train_step = tf.train.AdamOptimizer(LEARNING_RATE_BASE).minimize(loss)
+    train_step = tf.train.AdamOptimizer(LEARNING_RATE_BASE).minimize(loss, global_step=global_step)
     # 定义准确率
     correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(test_y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
